@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      -"80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+    networks:
+    - api_network
+  api_1:
+    image: 
+    restart: always
+    networks:
+      - api_network
+    depends_on:
+      - api_db
+  api_2:
+    image: 
+    restart: always
+    networks:
+      - api_network
+    depends_on:
+      - api_db  
+  api_3:
+    image: 
+    restart: always
+    networks:
+      - api_network
+    depends_on:
+      - api_db
+  api_db:
+    image: mongo:latest
+    networks:
+      - api_network
+
+
+
+
+
+
+
+networks:
+  api_network:
+    driver: bridge
+    
