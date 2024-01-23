@@ -1,5 +1,5 @@
+from models.film import Film
 from pymongo import MongoClient
-from ..models.film import Film
 from mappers.filmMapper import individualMapper, serialMapper
 from bson import ObjectId
 
@@ -22,18 +22,20 @@ class FilmRepository():
             print(" I can ping!!")
         except Exception as e:
             print(e)
-
-    def insert(self, newFilm: models.Film) -> ObjectId:
+    """ Add new item to database"""
+    def Insert(self, newFilm: Film) -> ObjectId:
         result = self.collection.insert_one(dict(newFilm))
         return result.inserted_id
     
-    def getByID(self, filmID: str) -> dict:
+    """ Retrieve item from DB by ID."""
+    def GetByID(self, filmID: str) -> dict:
         film = self.collection.find_one({"_id": ObjectId(filmID)})
         return individualMapper(film)
     
-    def getAll(self) -> list:
-        films = self.collection.find()
-        return serialMapper(films)
+    """ Retrieve all items from DB with limit."""
+    def GetAll(self, limit) -> list[Film]:
+        films = self.collection.find().limit(limit)
+        return [Film(**film) for film in films]
     
     def __exit__(self, exc_type, exc_value, traceback):
         self.client.close()
