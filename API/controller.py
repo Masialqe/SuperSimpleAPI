@@ -6,6 +6,12 @@ from repository import FilmRepository
 
 router = APIRouter()
 
+@router.get("/isalive")
+async def isAlive():
+    return {
+        "isAlive": True
+    }
+
 """Get all films."""
 @router.get("/films", status_code=200, response_model=list[Film])
 async def getAllFilms(limit: int = Query(10, description="Numbers of items to retrieve."), repository: FilmRepository = Depends()):
@@ -22,7 +28,7 @@ async def getAllFilms(limit: int = Query(10, description="Numbers of items to re
 
 """Get film by ID"""
 @router.get("/films/{filmId}", response_model=Film)
-async def getFilmById(filmId: ObjectId, repository: FilmRepository = Depends()):
+async def getFilmById(filmId: str, repository: FilmRepository = Depends()):
     if(filmId is None):
         raise HTTPException(status_code=400, detail="Item ID cannot be null.")
     try:   

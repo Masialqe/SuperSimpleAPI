@@ -1,13 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from . import controller
+from fastapi import FastAPI
+from controller import router
 import uvicorn
 
 
 app = FastAPI()
-app.include_router(controller.router)
+app.include_router(router)
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000 openapi_prefix="/api")
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
 

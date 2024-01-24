@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator, Field, BaseConfig
 from bson import ObjectId
 from datetime import datetime
 from enum import Enum
@@ -15,13 +15,12 @@ class GenreEnum(Enum):
 
 """Film model"""
 class Film(BaseModel):
-    id: ObjectId = Field(alias="_id")
-    title: str
+    id: str = Field(alias="_id")
+    title: str 
     genre: str
     releaseDate: datetime
     director: str 
     addedToBase: datetime
-    checksum: str
 
 """Create film model"""
 class FilmPOST(BaseModel):
@@ -38,4 +37,4 @@ class FilmPOST(BaseModel):
     
 """Return object ID."""
 class FilmID(BaseModel):
-    id: ObjectId = Field(alias="_id")
+    id: str = Field(alias="_id", default=None)
