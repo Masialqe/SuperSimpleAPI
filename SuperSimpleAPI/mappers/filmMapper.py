@@ -7,6 +7,7 @@ def individualMapper(film) -> dict:
         "releaseDate": film["releaseDate"],
         "director": film["director"]
     }
+
 """Map list of objects"""
 def serialMapper(films) -> list:
     return [individualMapper(film) for film in films]

@@ -2,7 +2,7 @@ from models.film import Film
 from pymongo import MongoClient
 from mappers.filmMapper import individualMapper, serialMapper
 from bson import ObjectId
-
+import os
 
 from datetime import datetime
 
@@ -10,6 +10,7 @@ class FilmRepository():
     
     def __init__(self) -> None:
         self.client = MongoClient("localhost", 2717)
+        #self.client = MongoClient(os.environ.get("MONGO_DB","mongo_db"), 27017)
         self.db = self.client.FilmDB
         self.collection = self.db.filmCollection
 
@@ -35,7 +36,7 @@ class FilmRepository():
     """ Retrieve all items from DB with limit."""
     def GetAll(self, limit) -> list[Film]:
         films = self.collection.find().limit(limit)
-        return [Film(**film) for film in films]
+        return serialMapper([Film(**film) for film in films])
     
     def __exit__(self, exc_type, exc_value, traceback):
         self.client.close()
