@@ -2,7 +2,7 @@
 def individualMapper(film) -> dict:
     return {
         "id": str(film["_id"]),
-        "title": film["name"],
+        "title": film["title"],
         "genre": film["genre"], 
         "releaseDate": film["releaseDate"],
         "director": film["director"]

@@ -1,6 +1,7 @@
 import logging
 import sys
 
+""" Configure logger instance """
 def configureLogger():
     logging.basicConfig(
         level=logging.ERROR,
@@ -8,8 +9,8 @@ def configureLogger():
         stream=sys.stdout
     )
 
-# Create and configure the logger
+#create and configure Logger
 configureLogger()
 
-# Get the logger instance
+#get Logger instance
 logger = logging.getLogger(__name__)

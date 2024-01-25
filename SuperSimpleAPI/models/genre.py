@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')
+
 from enum import Enum
 
 """ Genres for Film model validation. """
