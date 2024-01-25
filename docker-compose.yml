@@ -4,15 +4,13 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      -"80:80"
+      - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
     networks:
     - api_network
   api_instance_1:
-    build:
-      context: ./SuperSimpleAPI 
-    image: super_simple_api:latest
+    build: ./SuperSimpleAPI
     restart: always
     networks:
       - api_network
@@ -21,9 +19,7 @@ services:
     depends_on:
       - api_db
   api_instance_2:
-    build:
-      context: ./SuperSimpleAPI 
-    image: super_simple_api:latest 
+    build: ./SuperSimpleAPI
     restart: always
     networks:
       - api_network
@@ -32,9 +28,7 @@ services:
     depends_on:
       - api_db  
   api_instance_3:
-    build:
-      context: ./SuperSimpleAPI
-    image: super_simple_api:latest  
+    build: ./SuperSimpleAPI 
     restart: always
     environment:
       - MONGO_DB=api_db
@@ -47,7 +41,7 @@ services:
     networks:
       - api_network
     volumes:
-      -api_db_data:/data/db
+      - api_db_data:/data/db
 
 networks:
   api_network:

@@ -1,4 +1,5 @@
 import sys
+import os
 sys.path.append('.')
 from models.film import Film
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -11,8 +12,8 @@ from datetime import datetime
 class FilmRepository():
     
     def __init__(self) -> None:
-        self.client = AsyncIOMotorClient("mongodb://localhost:2717/")
-        #self.client = AsyncIOMotorClient(f"mongodb://{os.environ.get("MONGO_DB","mongo_db")}:27017")
+        #self.client = AsyncIOMotorClient("mongodb://localhost:2717/")
+        self.client = AsyncIOMotorClient(f'mongodb://{os.environ.get("MONGO_DB","mongo_db")}:27017')
         self.db = self.client.FilmDB
         self.collection = self.db.filmCollection
 
