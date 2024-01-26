@@ -1,8 +1,9 @@
 import logging
 import sys
 
-""" Configure logger instance """
+
 def configureLogger():
+    """ Configure logger instance """
     logging.basicConfig(
         level=logging.ERROR,
         format='[%(asctime)s][%(levelname)s]: %(message)s',

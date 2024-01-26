@@ -2,16 +2,18 @@ from bson import ObjectId
 from fastapi import HTTPException, Depends
 from repositories.filmRepository import FilmRepository
 
-"""Validate given value if matches ObjectID """
+
 def isValidObjectID(itemToValidate):
+    """Validate given value if matches ObjectID """
     try:
         ObjectId(itemToValidate)
         return True
     except Exception:
         return False
     
-""" Validate object ID """
-def ValidateObjectID(func):
+
+def validateObjectID(func):
+    """ Validate object ID """
     async def wrapper(filmID: str, repository: FilmRepository = Depends()):
         
         if not filmID:

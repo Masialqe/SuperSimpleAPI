@@ -5,9 +5,9 @@ from pydantic import BaseModel, validator
 from datetime import datetime
 from models.genre import GenreEnum
 
-"""Base Film model class."""
-class Film(BaseModel):
 
+class Film(BaseModel):
+    """Base Film model class."""
     title: str 
     genre: str
     releaseDate: datetime
@@ -20,8 +20,9 @@ class Film(BaseModel):
             raise ValueError(f"Incorrect genre. Genre must be in {[genre.value for genre in GenreEnum]}")
         return value
     
-"""Film response model"""  
+ 
 class FilmResponse(BaseModel):
+    """Film response model""" 
     id: str
     title: str 
     genre: str

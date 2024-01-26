@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from models.film import Film, FilmResponse
-import models.objectIDValidator as objectIDValidator
-from models.objectIDValidator import ValidateObjectID
+from models.objectIDValidator import validateObjectID, isValidObjectID
 from repositories.filmRepository import FilmRepository
 from common.logger import logger
 
@@ -9,7 +8,7 @@ router = APIRouter()
 
 @router.get("/films", status_code= 200, response_model=list[FilmResponse])
 async def getAllFilms(limit: int = Query(10, description="Numbers of item to retrieve."),repository: FilmRepository = Depends()):
-    """Get all films endpoint"""
+    """Get all films """
     try:
         result = await repository.GetAll(limit)
         if not result:
@@ -24,10 +23,10 @@ async def getAllFilms(limit: int = Query(10, description="Numbers of item to ret
         logger.error(f"[GET]: Exception occured executing endpoint (films): {ex}")
         raise HTTPException(status_code= 500, detail="Internal Server Error - failed to load entities.")
 
-"""Get one film by ID endpoint"""
 @router.get("/films/{filmID}", status_code= 200, response_model= FilmResponse)
-@ValidateObjectID
+@validateObjectID
 async def getFilmByID(filmID: str, repository: FilmRepository = Depends()):
+        """Get one film by ID """
         try:
             result = await repository.getByID(filmID)
             if result is not None:
@@ -44,7 +43,7 @@ async def getFilmByID(filmID: str, repository: FilmRepository = Depends()):
 
 @router.post("/films", status_code= 201, response_model= str)
 async def createNewFilm(newFilm: Film, repository: FilmRepository = Depends()):
-    """Create new film endpoint"""
+    """Create new film """
     try:
         created = await repository.insert(newFilm)
         return created
@@ -54,9 +53,9 @@ async def createNewFilm(newFilm: Film, repository: FilmRepository = Depends()):
         raise HTTPException(status_code= 500, detail="Internal Server Error - failed to add new entity.")
     
 @router.delete("/films/{filmID}", status_code=204)
-@ValidateObjectID
+@validateObjectID
 async def deleteExistingFilm(filmID: str, repository: FilmRepository = Depends()):
-    """Delete film endpoint """
+    """Delete film """
     try:
         result = await repository.deleteByID(filmID)
         if not result:
@@ -70,11 +69,12 @@ async def deleteExistingFilm(filmID: str, repository: FilmRepository = Depends()
         raise HTTPException(status_code= 500, detail="Internal Server Error - failed to delete entity.")
     
 @router.put("/films/{filmID}", status_code= 204)
-#@ValidateObjectID
+
+#@validateObjectID
 async def updateExistingFilm(filmID: str, updatedFilm: Film, repository: FilmRepository = Depends()):
-    """ Update existing film by ID endpoint"""
+    """ Update existing film by ID """
     try:
-        if not objectIDValidator.IsValidObjectID(filmID):
+        if not isValidObjectID(filmID):
             raise HTTPException(status_code=400, detail="ID Should be valid ObjectID.")
         else:
              result = await repository.updateByID(filmID, updatedFilm)
