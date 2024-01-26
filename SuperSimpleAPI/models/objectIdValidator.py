@@ -3,7 +3,7 @@ from fastapi import HTTPException, Depends
 from repositories.filmRepository import FilmRepository
 
 """Validate given value if matches ObjectID """
-def IsValidObjectID(itemToValidate):
+def isValidObjectID(itemToValidate):
     try:
         ObjectId(itemToValidate)
         return True
@@ -17,7 +17,7 @@ def ValidateObjectID(func):
         if not filmID:
             raise HTTPException(status_code=400, detail="Item ID cannot be null.")
         
-        if not IsValidObjectID(filmID):
+        if not isValidObjectID(filmID):
             raise HTTPException(status_code=400, detail="ID should be a valid ObjectID.")
         
         return await func(filmID, repository)

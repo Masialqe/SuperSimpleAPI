@@ -20,31 +20,31 @@ class FilmRepository():
     def __enter__(self):
         return self
     
-    """ Add new item to database"""
-    async def Insert(self, newFilm: Film) -> str:
+    async def insert(self, newFilm: Film) -> str:
+        """ Add new item to database"""
         result = await self.collection.insert_one(dict(newFilm))
         return str(result.inserted_id)
     
-    """ Retrieve item from DB by ID."""
-    async def GetByID(self, filmID: str) -> dict:
+    async def getByID(self, filmID: str) -> dict:
+        """ Retrieve item from DB by ID."""
         film = await self.collection.find_one({"_id": ObjectId(filmID)})
         if film is None:
             return None
         return individualMapper(film)
     
-    """ Retrieve all items from DB with limit."""
-    async def GetAll(self, limit: int) -> List[Film]:
+    async def getAll(self, limit: int) -> List[Film]:
+        """ Retrieve all items from DB with limit."""
         cursor = self.collection.find().limit(limit)
         films = await cursor.to_list(length=limit)
         return serialMapper(films)
     
-    """ Delete item from DB"""
-    async def DeleteByID(self, filmID: str) -> bool:
+    async def deleteByID(self, filmID: str) -> bool:
+        """ Delete item from DB"""
         result = await self.collection.delete_one({"_id" : ObjectId(filmID)})
         return result.deleted_count == 1
     
-    """Update item by ID"""
-    async def UpdateByID(self, filmID: str, updatedFilm: Film) -> bool:
+    async def updateByID(self, filmID: str, updatedFilm: Film) -> bool:
+        """Update item by ID"""
         result = await self.collection.update_one({"_id": ObjectId(filmID)}, {"$set": dict(updatedFilm)})
         return result.modified_count > 0
     

@@ -1,5 +1,5 @@
-"""Map one object to dict"""
 def individualMapper(film) -> dict:
+    """Map one object to dict"""
     return {
         "id": str(film["_id"]),
         "title": film["title"],
@@ -8,6 +8,6 @@ def individualMapper(film) -> dict:
         "director": film["director"]
     }
 
-"""Map list of objects"""
 def serialMapper(films) -> list:
+    """Map list of objects"""
     return [individualMapper(film) for film in films]

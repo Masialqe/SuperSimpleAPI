@@ -3,8 +3,8 @@ sys.path.append('.')
 
 from enum import Enum
 
-""" Genres for Film model validation. """
 class GenreEnum(Enum):
+    """ Genres for Film model validation. """
 
     Action = "Action"
     Comedy = "Comedy"

@@ -1,17 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from models.film import Film, FilmResponse
-import models.objectIdValidator as objectIdValidator
+import models.objectIDValidator as objectIDValidator
+from models.objectIDValidator import ValidateObjectID
 from repositories.filmRepository import FilmRepository
 from common.logger import logger
 
 router = APIRouter()
 
-"""Get all films endpoint"""
 @router.get("/films", status_code= 200, response_model=list[FilmResponse])
-async def GetAllFilms(limit: int = Query(10, description="Numbers of item to retrieve."),repository: FilmRepository = Depends()):
+async def getAllFilms(limit: int = Query(10, description="Numbers of item to retrieve."),repository: FilmRepository = Depends()):
+    """Get all films endpoint"""
     try:
         result = await repository.GetAll(limit)
-        if result is not None:
+        if not result:
             return result
         else:
             raise HTTPException(status_code=404, detail="Requested list is empty.")
@@ -25,10 +26,10 @@ async def GetAllFilms(limit: int = Query(10, description="Numbers of item to ret
 
 """Get one film by ID endpoint"""
 @router.get("/films/{filmID}", status_code= 200, response_model= FilmResponse)
-@objectIdValidator.ValidateObjectID
-async def GetFilmByID(filmID: str, repository: FilmRepository = Depends()):
+@ValidateObjectID
+async def getFilmByID(filmID: str, repository: FilmRepository = Depends()):
         try:
-            result = await repository.GetByID(filmID)
+            result = await repository.getByID(filmID)
             if result is not None:
                 return result
             else:
@@ -41,23 +42,23 @@ async def GetFilmByID(filmID: str, repository: FilmRepository = Depends()):
             logger.error(f"[GET]: Exception occured executing endpoint (films/ID): {ex}")
             raise HTTPException(status_code= 500, detail="Internal Server Error - failed to load entity.")
 
-"""Create new film endpoint"""
 @router.post("/films", status_code= 201, response_model= str)
-async def CreateNewFilm(newFilm: Film, repository: FilmRepository = Depends()):
+async def createNewFilm(newFilm: Film, repository: FilmRepository = Depends()):
+    """Create new film endpoint"""
     try:
-        created = await repository.Insert(newFilm)
+        created = await repository.insert(newFilm)
         return created
     
     except Exception as ex:
         logger.error(f"[POST]: Exception occured executing endpoint: {ex}")
         raise HTTPException(status_code= 500, detail="Internal Server Error - failed to add new entity.")
     
-"""Delete film endpoint """
 @router.delete("/films/{filmID}", status_code=204)
-@objectIdValidator.ValidateObjectID
-async def DeleteExistingFilm(filmID: str, repository: FilmRepository = Depends()):
+@ValidateObjectID
+async def deleteExistingFilm(filmID: str, repository: FilmRepository = Depends()):
+    """Delete film endpoint """
     try:
-        result = await repository.DeleteByID(filmID)
+        result = await repository.deleteByID(filmID)
         if not result:
             raise HTTPException(status_code=404, detail="Item not found.")
              
@@ -68,15 +69,15 @@ async def DeleteExistingFilm(filmID: str, repository: FilmRepository = Depends()
         logger.error(f"[DELETE]: Exception occured executing endpoint (films/ID): {ex}")
         raise HTTPException(status_code= 500, detail="Internal Server Error - failed to delete entity.")
     
-""" Update existing film by ID endpoint"""
 @router.put("/films/{filmID}", status_code= 204)
-#@objectIdValidator.ValidateObjectID
-async def UpdateExistingFilm(filmID: str, updatedFilm: Film, repository: FilmRepository = Depends()):
+#@ValidateObjectID
+async def updateExistingFilm(filmID: str, updatedFilm: Film, repository: FilmRepository = Depends()):
+    """ Update existing film by ID endpoint"""
     try:
-        if not objectIdValidator.IsValidObjectID(filmID):
+        if not objectIDValidator.IsValidObjectID(filmID):
             raise HTTPException(status_code=400, detail="ID Should be valid ObjectID.")
         else:
-             result = await repository.UpdateByID(filmID, updatedFilm)
+             result = await repository.updateByID(filmID, updatedFilm)
              if not result:
                   raise HTTPException(status_code=404, detail="Item not found.")
              
