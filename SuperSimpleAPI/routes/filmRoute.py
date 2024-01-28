@@ -10,8 +10,8 @@ router = APIRouter()
 async def getAllFilms(limit: int = Query(10, description="Numbers of item to retrieve."),repository: FilmRepository = Depends()):
     """Get all films """
     try:
-        result = await repository.GetAll(limit)
-        if not result:
+        result = await repository.getAll(limit)
+        if result:
             return result
         else:
             raise HTTPException(status_code=404, detail="Requested list is empty.")
@@ -69,18 +69,14 @@ async def deleteExistingFilm(filmID: str, repository: FilmRepository = Depends()
         raise HTTPException(status_code= 500, detail="Internal Server Error - failed to delete entity.")
     
 @router.put("/films/{filmID}", status_code= 204)
-
-#@validateObjectID
+@validateObjectID
 async def updateExistingFilm(filmID: str, updatedFilm: Film, repository: FilmRepository = Depends()):
     """ Update existing film by ID """
     try:
-        if not isValidObjectID(filmID):
-            raise HTTPException(status_code=400, detail="ID Should be valid ObjectID.")
-        else:
-             result = await repository.updateByID(filmID, updatedFilm)
-             if not result:
-                  raise HTTPException(status_code=404, detail="Item not found.")
-             
+        result = await repository.updateByID(filmID, updatedFilm)
+        if not result:
+            raise HTTPException(status_code=404, detail="Item not found.")
+       
     except HTTPException as httpEx:
             raise httpEx
     

@@ -6,16 +6,16 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from mappers.filmMapper import individualMapper, serialMapper
 from bson import ObjectId
 from typing import List
-from datetime import datetime
 
-""" CRUD operations for film collection"""
+
 class FilmRepository():
-    
+    """ CRUD operations for film collection"""
+
     def __init__(self) -> None:
         #dev-only
-        self.client = AsyncIOMotorClient("mongodb://localhost:2717/")
+        #self.client = AsyncIOMotorClient("mongodb://localhost:2717/")
         #prod
-        #self.client = AsyncIOMotorClient(f'mongodb://{os.environ.get("MONGO_DB","mongo_db")}:27017')
+        self.client = AsyncIOMotorClient(f'mongodb://{os.environ.get("MONGO_DB","mongo_db")}:27017')
         self.db = self.client.FilmDB
         self.collection = self.db.filmCollection
 

@@ -46,11 +46,14 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    ports:
-      - "9090:9090"
     networks:
-      - api_network
-    command: "--config.file=/etc/prometheus/prometheus.yaml"
+      - dev_network
+    command: 
+      - --config.file=/etc/prometheus/prometheus.yaml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.external-url=http://localhost:9090/prometheus/
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - prometheus_data:/prometheus
@@ -60,18 +63,18 @@ services:
     image: grafana/grafana-oss:latest
     container_name: grafana
     networks:
-      - api_network
-    ports:
-      - "3000:3000"
+      - dev_network
     volumes:
       - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SERVER_ROOT_URL=http://localhost/grafana
     restart: unless-stopped
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0     
     container_name: cadvisor
-    #ports:
-      #- 8080:8080
+    networks:
+      - dev_network
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -86,13 +89,14 @@ services:
   node_exporter:
     image: quay.io/prometheus/node-exporter:v1.5.0
     container_name: node_exporter
+    networks:
+      - dev_network
     command: "--path.rootfs=/host"
     pid: host
     restart: unless-stopped
     volumes:
       - /:/host:ro,rslave
   
-
 networks:
   api_network:
     driver: bridge

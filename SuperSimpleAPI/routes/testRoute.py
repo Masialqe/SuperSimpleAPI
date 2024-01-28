@@ -2,9 +2,9 @@ from fastapi import APIRouter
 
 testRouter = APIRouter()
 
-""" Test API connectivity """
 @testRouter.get("/isalive", status_code= 200)
 def IsAlive():
+    """ Test API connectivity """
     return {
         "isAlive": True
     }

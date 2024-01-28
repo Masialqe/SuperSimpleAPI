@@ -9,6 +9,7 @@ services:
       - ./nginx:/etc/nginx/conf.d
     networks:
     - api_network
+    - dev_network
   api_instance_1:
     build: ./SuperSimpleAPI
     restart: always
@@ -18,6 +19,7 @@ services:
       - MONGO_DB=api_db
     depends_on:
       - api_db
+      
   api_instance_2:
     build: ./SuperSimpleAPI
     restart: always
@@ -36,8 +38,10 @@ services:
       - api_network
     depends_on:
       - api_db
+
   api_db:
     image: mongo:latest
+    container_name: api_db
     networks:
       - api_network
     volumes:
@@ -46,11 +50,14 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    ports:
-      - "9090:9090"
     networks:
-      - api_network
-    command: "--config.file=/etc/prometheus/prometheus.yaml"
+      - dev_network
+    command: 
+      - --config.file=/etc/prometheus/prometheus.yaml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.external-url=http://localhost:9090/prometheus/
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - prometheus_data:/prometheus
@@ -60,15 +67,17 @@ services:
     image: grafana/grafana-oss:latest
     container_name: grafana
     networks:
-      - api_network
-    ports:
-      - "3000:3000"
+      - dev_network
     volumes:
       - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SERVER_ROOT_URL=http://localhost/grafana
     restart: unless-stopped
 
 networks:
   api_network:
+    driver: bridge
+  dev_network:
     driver: bridge
 
 volumes:
