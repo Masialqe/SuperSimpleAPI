@@ -2,3 +2,4 @@ fastapi
 motor
 pydantic
 uvicorn
+setuptools>=65.5.1
